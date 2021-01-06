@@ -12,7 +12,7 @@ class Trip:NSObject{
     var latitude:Double = 0.0
     var passengerMiles:Double = 0.0
     var driverMiles:Double = 0.0
-    var tripId:Double = 0.0
-    var tripDirections:String = ""
-    var tripDate:Double = 0.0
+    var Id:Int = 0
+    var direction:String = ""
+    var date:Date = Date()
 }
