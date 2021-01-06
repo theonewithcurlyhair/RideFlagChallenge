@@ -15,7 +15,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="2" translatesAutoresizingMaskIntoConstraints="NO" id="C6f-bt-jNM">
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="2" translatesAutoresizingMaskIntoConstraints="NO" id="C6f-bt-jNM" userLabel="Filter">
                                 <rect key="frame" x="20" y="812" width="374" height="61"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="60" id="LeO-sw-r9X"/>
@@ -26,7 +26,7 @@
                                     <segment title="No Filter"/>
                                 </segments>
                             </segmentedControl>
-                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="xHP-gd-aNK">
+                            <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="xHP-gd-aNK" userLabel="Map">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="804"/>
                             </mapView>
                         </subviews>
