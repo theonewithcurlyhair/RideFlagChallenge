@@ -15,6 +15,7 @@
 		245A755225A6390F002908F9 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 245A755025A6390F002908F9 /* LaunchScreen.storyboard */; };
 		245A755D25A6390F002908F9 /* RideFlagChallengeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 245A755C25A6390F002908F9 /* RideFlagChallengeTests.swift */; };
 		245A756825A6390F002908F9 /* RideFlagChallengeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 245A756725A6390F002908F9 /* RideFlagChallengeUITests.swift */; };
+		245A757A25A63993002908F9 /* Trip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 245A757925A63993002908F9 /* Trip.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		245A756325A6390F002908F9 /* RideFlagChallengeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RideFlagChallengeUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		245A756725A6390F002908F9 /* RideFlagChallengeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RideFlagChallengeUITests.swift; sourceTree = "<group>"; };
 		245A756925A6390F002908F9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		245A757925A63993002908F9 /* Trip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trip.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -79,6 +81,7 @@
 		245A753925A6390C002908F9 = {
 			isa = PBXGroup;
 			children = (
+				245A757825A6395F002908F9 /* Model */,
 				245A754425A6390C002908F9 /* RideFlagChallenge */,
 				245A755B25A6390F002908F9 /* RideFlagChallengeTests */,
 				245A756625A6390F002908F9 /* RideFlagChallengeUITests */,
@@ -126,6 +129,14 @@
 				245A756925A6390F002908F9 /* Info.plist */,
 			);
 			path = RideFlagChallengeUITests;
+			sourceTree = "<group>";
+		};
+		245A757825A6395F002908F9 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				245A757925A63993002908F9 /* Trip.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -258,6 +269,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				245A757A25A63993002908F9 /* Trip.swift in Sources */,
 				245A754A25A6390C002908F9 /* ViewController.swift in Sources */,
 				245A754625A6390C002908F9 /* AppDelegate.swift in Sources */,
 				245A754825A6390C002908F9 /* SceneDelegate.swift in Sources */,
