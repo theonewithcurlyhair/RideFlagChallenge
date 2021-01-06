@@ -15,18 +15,18 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="2" translatesAutoresizingMaskIntoConstraints="NO" id="C6f-bt-jNM" userLabel="Filter">
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="C6f-bt-jNM" userLabel="Filter">
                                 <rect key="frame" x="20" y="812" width="374" height="61"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="60" id="LeO-sw-r9X"/>
                                 </constraints>
                                 <segments>
                                     <segment title="Driver Miles"/>
-                                    <segment title="Second"/>
+                                    <segment title="Passenger Miles"/>
                                     <segment title="No Filter"/>
                                 </segments>
                                 <connections>
-                                    <action selector="FilterChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="GKK-t6-vVv"/>
+                                    <action selector="FilterChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="EPQ-vG-cjD"/>
                                 </connections>
                             </segmentedControl>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="xHP-gd-aNK" userLabel="Map">

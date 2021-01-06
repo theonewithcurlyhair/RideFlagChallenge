@@ -24,7 +24,7 @@ class ViewController: UIViewController {
     //REGION : Standard Functions
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.filter.isHidden = true //?
+        self.filter.isHidden = true
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -32,7 +32,8 @@ class ViewController: UIViewController {
     }
     
     @IBAction func FilterChanged(_ sender: UISegmentedControl) {
-        if filter.selectedSegmentIndex == 0{    //Top Drivers
+        if filter.selectedSegmentIndex == 0
+        {    //Top Drivers
             filter.selectedSegmentTintColor = UIColor.lightGray
             
             SortByDriverMiles()
@@ -41,8 +42,9 @@ class ViewController: UIViewController {
                 DisplayTrips(tripObj: topDriversArray[obj], showDetails: false, passMiles: false, driverMiles: true, showAll: false)
             }
         }
-        else if filter.selectedSegmentIndex == 1{   //Top Passengers
-            filter.selectedSegmentTintColor = UIColor.yellow
+        else if filter.selectedSegmentIndex == 1
+        {   //Top Passengers
+            filter.selectedSegmentTintColor = UIColor.lightGray
             
             SortByPassengerMiles()
             
@@ -51,8 +53,9 @@ class ViewController: UIViewController {
             }
             
         }
-        else if filter.selectedSegmentIndex == 2{   //No Filter
-            filter.selectedSegmentTintColor = UIColor.green
+        else if filter.selectedSegmentIndex == 2
+        {
+            filter.selectedSegmentTintColor = UIColor.lightGray
             
             for obj in tripArray{
                 DisplayTrips(tripObj: obj, showDetails: false, passMiles: false, driverMiles: false, showAll: true)
@@ -95,8 +98,8 @@ class ViewController: UIViewController {
                     trip.driverMiles = jsonObj.value(forKey: "driver_miles") as! Double
                     trip.passengerMiles = jsonObj.value(forKey: "passenger_miles") as! Double
                     trip.direction = jsonObj.value(forKey: "direction") as! String
-                    trip.Id = jsonObj.value(forKey: "trip_id") as! Int
-                    trip.date = jsonObj.value(forKey: "trip_date") as! Date
+                    trip.Id = jsonObj.value(forKey: "trip_id") as! String
+                    trip.date = jsonObj.value(forKey: "trip_date") as! Double
                     
                     let startLoc = jsonObj.value(forKey: "start_location") as! NSArray
                     
@@ -125,7 +128,10 @@ class ViewController: UIViewController {
             tripArray.append(tripObj)
             
             let annotation = MKPointAnnotation()
-            annotation.subtitle = String(format: "%@ %@\n%@ %.6f\n %@ %.6f\n%@ %.0f\n%@ %.0f", "Directions", tripObj.direction, "Passenger Miles:", tripObj.passengerMiles, "Driver Miles:", tripObj.driverMiles, "Trip ID:", tripObj.Id, "Trip Date", tripObj.date as CVarArg)
+            
+            ///annotation.subtitle = String(format: "%@ %@\n%@ %.6f\n %@ %.6f\n%@ %.0f\n%@ %.0f", "Directions", tripObj.direction, "Passenger Miles:", tripObj.passengerMiles, "Driver Miles:", tripObj.driverMiles, "Trip ID:", tripObj.Id, "Trip Date", tripObj.date)
+            
+            annotation.subtitle = String(format: "%@ %@\n%@ %.6f\n %@ %.6f\n%@ %.0f\n%@ %.0f","Directions:",tripObj.direction,"P Miles:",tripObj.passengerMiles,"D Miles:",tripObj.driverMiles,"Trip ID:",tripObj.Id,"Trip Date:",tripObj.date)
             
             annotation.coordinate = CLLocationCoordinate2DMake(tripObj.latitude, tripObj.longitude)
             self.mapView.addAnnotation(annotation)
@@ -133,7 +139,8 @@ class ViewController: UIViewController {
             
             DispatchQueue.main.async { [unowned self] in
                 let coordinate = CLLocationCoordinate2DMake(tripObj.latitude, tripObj.longitude)
-                let region = MKCoordinateRegion(center: coordinate, latitudinalMeters: 150, longitudinalMeters: 150)
+                let span = MKCoordinateRegion(center: coordinate, latitudinalMeters: 150, longitudinalMeters: 150)
+                let region = span
                 self.mapView.setRegion(region, animated: true)
             }
         }
@@ -142,26 +149,30 @@ class ViewController: UIViewController {
             
             annotation.title = ""
             
-            if(passMiles){
+            if(passMiles)
+            {
                 annotation.title = "Among Top 5 Passengers"
             }
-            else if(driverMiles){
+            else if(driverMiles)
+            {
                 annotation.title = "Among Top 5 Drivers"
             }
-            else if(showAll){
+            else if(showAll)
+            {
                 annotation.title = "Trip"
             }
-            
-            annotation.subtitle = String(format: "%@ %@\n%@ %.6f\n %@ %.6f\n%@ %.0f\n%@ %.0f", "Directions", tripObj.direction, "Passenger Miles:", tripObj.passengerMiles, "Driver Miles:", tripObj.driverMiles, "Trip ID:", tripObj.Id, "Trip Date", tripObj.date as CVarArg)
+           
+            annotation.subtitle = String(format: "%@ %@\n%@ %.6f\n %@ %.6f\n%@ %.0f\n%@ %.0f","Directions:",tripObj.direction,"P Miles:",tripObj.passengerMiles,"D Miles:",tripObj.driverMiles,"Trip ID:",tripObj.Id,"Trip Date:",tripObj.date)
             
             annotation.coordinate = CLLocationCoordinate2DMake(tripObj.latitude, tripObj.longitude)
-            self.mapView.addAnnotation(annotation)
-            
+                self.mapView.addAnnotation(annotation)
+
             DispatchQueue.main.async { [unowned self] in
+                
                 let coordinate = CLLocationCoordinate2DMake(tripObj.latitude, tripObj.longitude)
-                let region = MKCoordinateRegion(center: coordinate, latitudinalMeters: 100, longitudinalMeters: 100)
-                self.mapView.setRegion(region, animated: true)
-    
+                let span = MKCoordinateRegion(center: coordinate, latitudinalMeters: 100,longitudinalMeters: 100)
+                let region = span
+               self.mapView.setRegion(region, animated: true)
             }
         }
     }
@@ -175,7 +186,7 @@ class ViewController: UIViewController {
     }
     
     func SortByPassengerMiles() -> Void {
-        topDriversArray = tripArray.sorted {
+        topPassengersArray = tripArray.sorted {
             $0.passengerMiles > $1.passengerMiles
         }
     }
