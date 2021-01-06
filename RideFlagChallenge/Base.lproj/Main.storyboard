@@ -25,6 +25,9 @@
                                     <segment title="Second"/>
                                     <segment title="No Filter"/>
                                 </segments>
+                                <connections>
+                                    <action selector="FilterChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="GKK-t6-vVv"/>
+                                </connections>
                             </segmentedControl>
                             <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="xHP-gd-aNK" userLabel="Map">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="804"/>
@@ -42,6 +45,10 @@
                             <constraint firstItem="C6f-bt-jNM" firstAttribute="top" secondItem="xHP-gd-aNK" secondAttribute="bottom" constant="8" id="yia-E0-FgV"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="filter" destination="C6f-bt-jNM" id="53c-nV-dhb"/>
+                        <outlet property="mapView" destination="xHP-gd-aNK" id="dc7-nO-Nim"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
