@@ -38,7 +38,7 @@ class ViewController: UIViewController {
             SortByDriverMiles()
             
             for obj in 0..<5{
-                DisplayTrips(tripObj: topDriversArray[obj], flag: false, passMiles: false, driverMiles: true, showAll: false)
+                DisplayTrips(tripObj: topDriversArray[obj], showDetails: false, passMiles: false, driverMiles: true, showAll: false)
             }
         }
         else if filter.selectedSegmentIndex == 1{   //Top Passengers
@@ -47,7 +47,7 @@ class ViewController: UIViewController {
             SortByPassengerMiles()
             
             for obj in 0..<5{
-                DisplayTrips(tripObj: topPassengersArray[obj], flag: false, passMiles: true, driverMiles: false, showAll: false)
+                DisplayTrips(tripObj: topPassengersArray[obj], showDetails: false, passMiles: true, driverMiles: false, showAll: false)
             }
             
         }
@@ -55,7 +55,7 @@ class ViewController: UIViewController {
             filter.selectedSegmentTintColor = UIColor.green
             
             for obj in tripArray{
-                DisplayTrips(tripObj: obj, flag: false, passMiles: false, driverMiles: false, showAll: true)
+                DisplayTrips(tripObj: obj, showDetails: false, passMiles: false, driverMiles: false, showAll: true)
             }
         }
     }
@@ -103,7 +103,7 @@ class ViewController: UIViewController {
                     trip.latitude = startLoc[0] as! Double
                     trip.longitude = startLoc[1] as! Double
                     
-                    self.DisplayTrips(tripObj: trip, flag: true, passMiles: false, driverMiles: false, showAll: true)
+                    self.DisplayTrips(tripObj: trip, showDetails: true, passMiles: false, driverMiles: false, showAll: true)
                 }
             } catch{
                 print("error")
@@ -118,9 +118,52 @@ class ViewController: UIViewController {
         task.resume()
     }
     
-    ///Displays trip markers on the map
-    func DisplayTrips(tripObj: Trip, flag: Bool, passMiles: Bool, driverMiles: Bool, showAll:Bool) -> Void {
+    //Displays Trips on the Map
+    func DisplayTrips(tripObj: Trip, showDetails: Bool, passMiles: Bool, driverMiles: Bool, showAll:Bool) -> Void {
         
+        if showDetails{
+            tripArray.append(tripObj)
+            
+            let annotation = MKPointAnnotation()
+            annotation.subtitle = String(format: "%@ %@\n%@ %.6f\n %@ %.6f\n%@ %.0f\n%@ %.0f", "Directions", tripObj.direction, "Passenger Miles:", tripObj.passengerMiles, "Driver Miles:", tripObj.driverMiles, "Trip ID:", tripObj.Id, "Trip Date", tripObj.date as CVarArg)
+            
+            annotation.coordinate = CLLocationCoordinate2DMake(tripObj.latitude, tripObj.longitude)
+            self.mapView.addAnnotation(annotation)
+            
+            
+            DispatchQueue.main.async { [unowned self] in
+                let coordinate = CLLocationCoordinate2DMake(tripObj.latitude, tripObj.longitude)
+                let region = MKCoordinateRegion(center: coordinate, latitudinalMeters: 150, longitudinalMeters: 150)
+                self.mapView.setRegion(region, animated: true)
+            }
+        }
+        else{
+            let annotation = MKPointAnnotation()
+            
+            annotation.title = ""
+            
+            if(passMiles){
+                annotation.title = "Among Top 5 Passengers"
+            }
+            else if(driverMiles){
+                annotation.title = "Among Top 5 Drivers"
+            }
+            else if(showAll){
+                annotation.title = "Trip"
+            }
+            
+            annotation.subtitle = String(format: "%@ %@\n%@ %.6f\n %@ %.6f\n%@ %.0f\n%@ %.0f", "Directions", tripObj.direction, "Passenger Miles:", tripObj.passengerMiles, "Driver Miles:", tripObj.driverMiles, "Trip ID:", tripObj.Id, "Trip Date", tripObj.date as CVarArg)
+            
+            annotation.coordinate = CLLocationCoordinate2DMake(tripObj.latitude, tripObj.longitude)
+            self.mapView.addAnnotation(annotation)
+            
+            DispatchQueue.main.async { [unowned self] in
+                let coordinate = CLLocationCoordinate2DMake(tripObj.latitude, tripObj.longitude)
+                let region = MKCoordinateRegion(center: coordinate, latitudinalMeters: 100, longitudinalMeters: 100)
+                self.mapView.setRegion(region, animated: true)
+    
+            }
+        }
     }
     
     
