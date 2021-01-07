@@ -9,24 +9,22 @@ import UIKit
 import CoreLocation
 import MapKit
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, URLSessionDelegate {
 
-
+    var session = URLSession.shared
     @IBOutlet weak var filter: UISegmentedControl!
     @IBOutlet weak var mapView: MKMapView!
+    
+    func url() -> String {
+            return "https://5vb5vug3qg.execute-api.us-east-1.amazonaws.com/get_trip"
+    }
     
     //Global Variables to Work With
     var jsonArray:NSArray = []
     var tripArray = [Trip]()
     var topDriversArray = [Trip]()
     var topPassengersArray = [Trip]()
-    
-    //REGION : Standard Functions
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        self.filter.isHidden = true
-    }
-    
+
     override func viewDidAppear(_ animated: Bool) {
         FetchTripData()
     }
@@ -191,7 +189,70 @@ class ViewController: UIViewController {
         }
     }
     
-
-
+    
+    
+    // MARK : Different Way
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.filter.isHidden = true
+        
+        doTheThing()
+    }
+    
+    //Parses json result to codable structs
+    private func parse(jsonData: Data) {
+        do {
+            let decodedData = try JSONDecoder().decode(Response.self,
+                                                       from: jsonData)
+            print("Response Code: ", decodedData.ResponseCode)
+            print("Response Message: \(decodedData.Message)")
+            print("===================================")
+        } catch {
+            print("decode error \(error)")
+        }
+    }
+    
+    //Loads json from the url
+    private func loadJson(fromURLString urlString: String,
+                          completion: @escaping (Result<Data, Error>) -> Void) {
+        if let url = URL(string: urlString) {
+            let urlSession = URLSession(configuration: .default).dataTask(with: url) { (data, response, error) in
+                if let error = error {
+                    completion(.failure(error))
+                }
+                
+                if let data = data {
+                    completion(.success(data))
+                }
+            }
+            
+            urlSession.resume()
+        }
+    }
+    
+    private func doTheThing() -> Void {
+        self.loadJson(fromURLString: url()) { (result) in
+            switch result {
+            case .success(let data):
+                self.parse(jsonData: data)
+            case .failure(let error):
+                print(error)
+            }
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }
+
+
 
