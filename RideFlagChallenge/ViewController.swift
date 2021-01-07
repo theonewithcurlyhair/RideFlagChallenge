@@ -11,23 +11,22 @@ import MapKit
 
 class ViewController: UIViewController, URLSessionDelegate {
 
-    var session = URLSession.shared
     @IBOutlet weak var filter: UISegmentedControl!
     @IBOutlet weak var mapView: MKMapView!
     
-    let url = "https://5vb5vug3qg.execute-api.us-east-1.amazonaws.com/get_trip"
+    //Global Variables to Work With
+    func url() -> String{
+        return "https://5vb5vug3qg.execute-api.us-east-1.amazonaws.com/get_trip"
+    }
     
     var activeFilter : ActiveFilter = ActiveFilter.Off
-    
-    //Global Variables to Work With
     var payloadsArray = [PayloadStruct]()
     var sortedPayloads = [PayloadStruct]()
     
     @IBAction func FilterChanged(_ sender: UISegmentedControl) {
         self.activeFilter = ActiveFilter(rawValue: self.filter.selectedSegmentIndex) ?? ActiveFilter.Off
-        Display(payloads: self.payloadsArray)
+        DisplayMarkers(payloads: self.payloadsArray)
     }
-    
     
     
     // MARK : Main Code
@@ -35,12 +34,17 @@ class ViewController: UIViewController, URLSessionDelegate {
         super.viewDidLoad()
         self.filter.isHidden = true     //Will only be visible after the successful request
         self.activeFilter = ActiveFilter(rawValue: self.filter.selectedSegmentIndex) ?? ActiveFilter.Off
-        doTheThing()
-        Display(payloads: payloadsArray)
+        
+        //Populate data and display on the map right after the view load
+        GetData()
+        DisplayMarkers(payloads: payloadsArray)
     }
     
-    //Parses json result to codable structs
-    private func parse(jsonData: Data) -> [PayloadStruct]? {
+    
+    /// Parses and Decodes JSON Data object into an array of PayloadStructs
+    /// - Parameter jsonData: loaded JSON object from the url request
+    /// - Returns: if sucess -> an array of PayloadStruct, if failure -> nil
+    private func DecodeJSON(jsonData: Data) -> [PayloadStruct]? {
         do {
             let decodedData = try JSONDecoder().decode(Response.self,
                                                        from: jsonData)
@@ -55,8 +59,14 @@ class ViewController: UIViewController, URLSessionDelegate {
     }
     
     //Loads json from the url
+    /// This method loads JSON from the requested URL. It waits for the URL to be finished before moving to the next steps
+    /// - Parameters:
+    ///   - urlString: URL from what make a request
+    ///   - completion: Returns loaded DATA object and any applicable errors
     private func loadJson(fromURLString urlString: String,
                           completion: @escaping (Result<Data, Error>) -> Void) {
+        var done = false
+        
         if let url = URL(string: urlString) {
             let urlSession = URLSession(configuration: .default).dataTask(with: url) { (data, response, error) in
                 if let error = error {
@@ -66,17 +76,28 @@ class ViewController: UIViewController, URLSessionDelegate {
                 if let data = data {
                     completion(.success(data))
                 }
+                
+                done = true
             }
             
             urlSession.resume()
+            
+            //Waiting for the URL to be finished
+            repeat {
+                RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
+            } while !done
         }
     }
     
-    private func doTheThing() -> Void {
-        self.loadJson(fromURLString: self.url) { (result) in
+    
+    /// Accesses DATA From Url, Parses, Decodes and tries to unwrap the result
+    /// If the result is empty showst the alert to the user with the option to Retry
+    /// - Returns: Void
+    private func GetData() -> Void {
+        self.loadJson(fromURLString: self.url()) { (result) in
             switch result {
             case .success(let data):
-                if let unwrappedJson = self.parse(jsonData: data) {
+                if let unwrappedJson = self.DecodeJSON(jsonData: data) {
                     self.payloadsArray = unwrappedJson
                     
                     DispatchQueue.main.async {
@@ -87,7 +108,7 @@ class ViewController: UIViewController, URLSessionDelegate {
                     DispatchQueue.main.async{[unowned self] in
                         let alertController = UIAlertController(title: "Something Went Wrong, Please Try Again", message: "Request Unsuccessful", preferredStyle: .alert)
                         
-                        let actionRetry = UIAlertAction(title: "Retry", style: .destructive, handler: {_ in doTheThing()})
+                        let actionRetry = UIAlertAction(title: "Retry", style: .destructive, handler: {_ in GetData()})
                         
                         alertController.addAction(actionRetry)
                         self.present(alertController, animated: true, completion: nil)
@@ -100,7 +121,11 @@ class ViewController: UIViewController, URLSessionDelegate {
         }
     }
     
-    private func Display(payloads: [PayloadStruct]) -> Void {
+    
+    /// Displays Markers on the map with the trip details
+    /// - Parameter payloads: Payloads from which to display on the map
+    /// - Returns: Void
+    private func DisplayMarkers(payloads: [PayloadStruct]) -> Void {
         //Check filter
         switch activeFilter {
         case .Drivers:
@@ -138,20 +163,6 @@ class ViewController: UIViewController, URLSessionDelegate {
         }
         
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 }
 
 
