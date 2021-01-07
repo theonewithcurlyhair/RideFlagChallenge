@@ -16,10 +16,6 @@
 		245A755D25A6390F002908F9 /* RideFlagChallengeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 245A755C25A6390F002908F9 /* RideFlagChallengeTests.swift */; };
 		245A756825A6390F002908F9 /* RideFlagChallengeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 245A756725A6390F002908F9 /* RideFlagChallengeUITests.swift */; };
 		245A757A25A63993002908F9 /* Trip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 245A757925A63993002908F9 /* Trip.swift */; };
-		245A759625A66D20002908F9 /* URLSessionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 245A759525A66D20002908F9 /* URLSessionProtocol.swift */; };
-		245A759B25A66D3F002908F9 /* URLSessionDataTaskProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 245A759A25A66D3F002908F9 /* URLSessionDataTaskProtocol.swift */; };
-		245A75A025A67029002908F9 /* URLSessionDataTask - URLSessionDataTaskProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 245A759F25A67029002908F9 /* URLSessionDataTask - URLSessionDataTaskProtocol.swift */; };
-		245A75A525A67045002908F9 /* URLSession - URLSessionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 245A75A425A67045002908F9 /* URLSession - URLSessionProtocol.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,10 +51,6 @@
 		245A756725A6390F002908F9 /* RideFlagChallengeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RideFlagChallengeUITests.swift; sourceTree = "<group>"; };
 		245A756925A6390F002908F9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		245A757925A63993002908F9 /* Trip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Trip.swift; sourceTree = "<group>"; };
-		245A759525A66D20002908F9 /* URLSessionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionProtocol.swift; sourceTree = "<group>"; };
-		245A759A25A66D3F002908F9 /* URLSessionDataTaskProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionDataTaskProtocol.swift; sourceTree = "<group>"; };
-		245A759F25A67029002908F9 /* URLSessionDataTask - URLSessionDataTaskProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSessionDataTask - URLSessionDataTaskProtocol.swift"; sourceTree = "<group>"; };
-		245A75A425A67045002908F9 /* URLSession - URLSessionProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URLSession - URLSessionProtocol.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,7 +81,6 @@
 		245A753925A6390C002908F9 = {
 			isa = PBXGroup;
 			children = (
-				245A758425A6694B002908F9 /* Data */,
 				245A757825A6395F002908F9 /* Model */,
 				245A754425A6390C002908F9 /* RideFlagChallenge */,
 				245A755B25A6390F002908F9 /* RideFlagChallengeTests */,
@@ -146,17 +137,6 @@
 				245A757925A63993002908F9 /* Trip.swift */,
 			);
 			path = Model;
-			sourceTree = "<group>";
-		};
-		245A758425A6694B002908F9 /* Data */ = {
-			isa = PBXGroup;
-			children = (
-				245A759525A66D20002908F9 /* URLSessionProtocol.swift */,
-				245A759A25A66D3F002908F9 /* URLSessionDataTaskProtocol.swift */,
-				245A759F25A67029002908F9 /* URLSessionDataTask - URLSessionDataTaskProtocol.swift */,
-				245A75A425A67045002908F9 /* URLSession - URLSessionProtocol.swift */,
-			);
-			path = Data;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -289,14 +269,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				245A759625A66D20002908F9 /* URLSessionProtocol.swift in Sources */,
-				245A75A525A67045002908F9 /* URLSession - URLSessionProtocol.swift in Sources */,
 				245A757A25A63993002908F9 /* Trip.swift in Sources */,
 				245A754A25A6390C002908F9 /* ViewController.swift in Sources */,
 				245A754625A6390C002908F9 /* AppDelegate.swift in Sources */,
-				245A759B25A66D3F002908F9 /* URLSessionDataTaskProtocol.swift in Sources */,
 				245A754825A6390C002908F9 /* SceneDelegate.swift in Sources */,
-				245A75A025A67029002908F9 /* URLSessionDataTask - URLSessionDataTaskProtocol.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

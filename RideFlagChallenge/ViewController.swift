@@ -15,200 +15,42 @@ class ViewController: UIViewController, URLSessionDelegate {
     @IBOutlet weak var filter: UISegmentedControl!
     @IBOutlet weak var mapView: MKMapView!
     
-    func url() -> String {
-            return "https://5vb5vug3qg.execute-api.us-east-1.amazonaws.com/get_trip"
-    }
+    let url = "https://5vb5vug3qg.execute-api.us-east-1.amazonaws.com/get_trip"
+    
+    var activeFilter : ActiveFilter = ActiveFilter.Off
     
     //Global Variables to Work With
-    var jsonArray:NSArray = []
-    var tripArray = [Trip]()
-    var topDriversArray = [Trip]()
-    var topPassengersArray = [Trip]()
-
-    override func viewDidAppear(_ animated: Bool) {
-        FetchTripData()
-    }
+    var payloadsArray = [PayloadStruct]()
+    var sortedPayloads = [PayloadStruct]()
     
     @IBAction func FilterChanged(_ sender: UISegmentedControl) {
-        if filter.selectedSegmentIndex == 0
-        {    //Top Drivers
-            filter.selectedSegmentTintColor = UIColor.lightGray
-            
-            SortByDriverMiles()
-            
-            for obj in 0..<5{
-                DisplayTrips(tripObj: topDriversArray[obj], showDetails: false, passMiles: false, driverMiles: true, showAll: false)
-            }
-        }
-        else if filter.selectedSegmentIndex == 1
-        {   //Top Passengers
-            filter.selectedSegmentTintColor = UIColor.lightGray
-            
-            SortByPassengerMiles()
-            
-            for obj in 0..<5{
-                DisplayTrips(tripObj: topPassengersArray[obj], showDetails: false, passMiles: true, driverMiles: false, showAll: false)
-            }
-            
-        }
-        else if filter.selectedSegmentIndex == 2
-        {
-            filter.selectedSegmentTintColor = UIColor.lightGray
-            
-            for obj in tripArray{
-                DisplayTrips(tripObj: obj, showDetails: false, passMiles: false, driverMiles: false, showAll: true)
-            }
-        }
+        self.activeFilter = ActiveFilter(rawValue: self.filter.selectedSegmentIndex) ?? ActiveFilter.Off
+        Display(payloads: self.payloadsArray)
     }
     
     
     
-    //Region : Working with Data
-    func FetchTripData() -> Void {
-        var request = URLRequest(url: URL(string: "https://5vb5vug3qg.execute-api.us-east-1.amazonaws.com/get_trip")!)
-        request.httpMethod = "GET"
-        let session = URLSession.shared
-        let task = session.dataTask(with: request, completionHandler: {data, response, error -> Void in
-            
-            //No Data Found
-            if(data == nil){
-                DispatchQueue.main.async{[unowned self] in
-                    let alertController = UIAlertController(title: "Something Went Wrong, Please Try Again", message: "Request Unsuccessful", preferredStyle: .alert)
-                    
-                    let actionRetry = UIAlertAction(title: "Retry", style: .destructive, handler: {_ in FetchTripData()})
-                    
-                    alertController.addAction(actionRetry)
-                    self.present(alertController, animated: true, completion: nil)
-                }
-                return
-            }
-            
-            //Proceed if no errors
-            do{
-                //Parsing JSON
-                let json = try JSONSerialization.jsonObject(with: data!) as! Dictionary<String, AnyObject>
-                
-                self.jsonArray = json["Payload"] as! NSArray
-                
-                for i in 0..<self.jsonArray.count{
-                    let trip = Trip()
-                    let jsonObj = self.jsonArray[i] as! NSDictionary
-                    trip.driverMiles = jsonObj.value(forKey: "driver_miles") as! Double
-                    trip.passengerMiles = jsonObj.value(forKey: "passenger_miles") as! Double
-                    trip.direction = jsonObj.value(forKey: "direction") as! String
-                    trip.Id = jsonObj.value(forKey: "trip_id") as! String
-                    trip.date = jsonObj.value(forKey: "trip_date") as! Double
-                    
-                    let startLoc = jsonObj.value(forKey: "start_location") as! NSArray
-                    
-                    trip.latitude = startLoc[0] as! Double
-                    trip.longitude = startLoc[1] as! Double
-                    
-                    self.DisplayTrips(tripObj: trip, showDetails: true, passMiles: false, driverMiles: false, showAll: true)
-                }
-            } catch{
-                print("error")
-            }
-            
-            DispatchQueue.main.async {
-                    [unowned self] in
-                self.filter.isHidden = false
-            }
-        })
-        
-        task.resume()
-    }
-    
-    //Displays Trips on the Map
-    func DisplayTrips(tripObj: Trip, showDetails: Bool, passMiles: Bool, driverMiles: Bool, showAll:Bool) -> Void {
-        
-        if showDetails{
-            tripArray.append(tripObj)
-            
-            let annotation = MKPointAnnotation()
-            
-            ///annotation.subtitle = String(format: "%@ %@\n%@ %.6f\n %@ %.6f\n%@ %.0f\n%@ %.0f", "Directions", tripObj.direction, "Passenger Miles:", tripObj.passengerMiles, "Driver Miles:", tripObj.driverMiles, "Trip ID:", tripObj.Id, "Trip Date", tripObj.date)
-            
-            annotation.subtitle = String(format: "%@ %@\n%@ %.6f\n %@ %.6f\n%@ %.0f\n%@ %.0f","Directions:",tripObj.direction,"P Miles:",tripObj.passengerMiles,"D Miles:",tripObj.driverMiles,"Trip ID:",tripObj.Id,"Trip Date:",tripObj.date)
-            
-            annotation.coordinate = CLLocationCoordinate2DMake(tripObj.latitude, tripObj.longitude)
-            self.mapView.addAnnotation(annotation)
-            
-            
-            DispatchQueue.main.async { [unowned self] in
-                let coordinate = CLLocationCoordinate2DMake(tripObj.latitude, tripObj.longitude)
-                let span = MKCoordinateRegion(center: coordinate, latitudinalMeters: 150, longitudinalMeters: 150)
-                let region = span
-                self.mapView.setRegion(region, animated: true)
-            }
-        }
-        else{
-            let annotation = MKPointAnnotation()
-            
-            annotation.title = ""
-            
-            if(passMiles)
-            {
-                annotation.title = "Among Top 5 Passengers"
-            }
-            else if(driverMiles)
-            {
-                annotation.title = "Among Top 5 Drivers"
-            }
-            else if(showAll)
-            {
-                annotation.title = "Trip"
-            }
-           
-            annotation.subtitle = String(format: "%@ %@\n%@ %.6f\n %@ %.6f\n%@ %.0f\n%@ %.0f","Directions:",tripObj.direction,"P Miles:",tripObj.passengerMiles,"D Miles:",tripObj.driverMiles,"Trip ID:",tripObj.Id,"Trip Date:",tripObj.date)
-            
-            annotation.coordinate = CLLocationCoordinate2DMake(tripObj.latitude, tripObj.longitude)
-                self.mapView.addAnnotation(annotation)
-
-            DispatchQueue.main.async { [unowned self] in
-                
-                let coordinate = CLLocationCoordinate2DMake(tripObj.latitude, tripObj.longitude)
-                let span = MKCoordinateRegion(center: coordinate, latitudinalMeters: 100,longitudinalMeters: 100)
-                let region = span
-               self.mapView.setRegion(region, animated: true)
-            }
-        }
-    }
-    
-    
-    //Region : Helpers
-    func SortByDriverMiles() -> Void {
-        topDriversArray = tripArray.sorted {
-            $0.driverMiles > $1.driverMiles
-        }
-    }
-    
-    func SortByPassengerMiles() -> Void {
-        topPassengersArray = tripArray.sorted {
-            $0.passengerMiles > $1.passengerMiles
-        }
-    }
-    
-    
-    
-    // MARK : Different Way
+    // MARK : Main Code
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.filter.isHidden = true
-        
+        self.filter.isHidden = true     //Will only be visible after the successful request
+        self.activeFilter = ActiveFilter(rawValue: self.filter.selectedSegmentIndex) ?? ActiveFilter.Off
         doTheThing()
+        Display(payloads: payloadsArray)
     }
     
     //Parses json result to codable structs
-    private func parse(jsonData: Data) {
+    private func parse(jsonData: Data) -> [PayloadStruct]? {
         do {
             let decodedData = try JSONDecoder().decode(Response.self,
                                                        from: jsonData)
             print("Response Code: ", decodedData.ResponseCode)
             print("Response Message: \(decodedData.Message)")
             print("===================================")
+            return decodedData.Payload
         } catch {
             print("decode error \(error)")
+            return nil
         }
     }
     
@@ -231,15 +73,73 @@ class ViewController: UIViewController, URLSessionDelegate {
     }
     
     private func doTheThing() -> Void {
-        self.loadJson(fromURLString: url()) { (result) in
+        self.loadJson(fromURLString: self.url) { (result) in
             switch result {
             case .success(let data):
-                self.parse(jsonData: data)
+                if let unwrappedJson = self.parse(jsonData: data) {
+                    self.payloadsArray = unwrappedJson
+                    
+                    DispatchQueue.main.async {
+                            [unowned self] in
+                        self.filter.isHidden = false
+                    }
+                }else{
+                    DispatchQueue.main.async{[unowned self] in
+                        let alertController = UIAlertController(title: "Something Went Wrong, Please Try Again", message: "Request Unsuccessful", preferredStyle: .alert)
+                        
+                        let actionRetry = UIAlertAction(title: "Retry", style: .destructive, handler: {_ in doTheThing()})
+                        
+                        alertController.addAction(actionRetry)
+                        self.present(alertController, animated: true, completion: nil)
+                    }
+                    return
+                }
             case .failure(let error):
                 print(error)
             }
         }
     }
+    
+    private func Display(payloads: [PayloadStruct]) -> Void {
+        //Check filter
+        switch activeFilter {
+        case .Drivers:
+            sortedPayloads = Array(payloads.sorted{
+                $0.driver_miles > $1.driver_miles
+            }.prefix(5))
+        case .Passengers:
+            sortedPayloads = Array(payloads.sorted{
+                $0.passenger_miles > $1.passenger_miles
+            }.prefix(5))
+        default:
+            print("Active filter is OFF")
+            sortedPayloads = payloads
+        }
+        
+        for i in 0..<sortedPayloads.count{
+            let annotation = MKPointAnnotation()
+            
+            annotation.subtitle = String(format: "%@ %@\n%@ %.6f\n %@ %.6f\n%@ %.0f\n%@ %.0f",
+                                         "Direction:",sortedPayloads[i].direction,
+                                         "P Miles:",sortedPayloads[i].passenger_miles,
+                                         "D Miles:",sortedPayloads[i].driver_miles,
+                                         "Trip ID:",sortedPayloads[i].trip_id,
+                                         "Trip Date:",sortedPayloads[i].trip_date)
+            
+            annotation.coordinate = CLLocationCoordinate2DMake(sortedPayloads[i].latitude, sortedPayloads[i].longitude)
+            self.mapView.addAnnotation(annotation)
+            
+            
+            DispatchQueue.main.async { [unowned self] in
+                let coordinate = CLLocationCoordinate2DMake(sortedPayloads[i].latitude, sortedPayloads[i].longitude)
+                let region = MKCoordinateRegion(center: coordinate, latitudinalMeters: 150, longitudinalMeters: 150)
+                self.mapView.setRegion(region, animated: true)
+            }
+        }
+        
+    }
+    
+    
     
     
     

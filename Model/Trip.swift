@@ -7,17 +7,6 @@
 
 import Foundation
 
-class Trip:NSObject{
-    var longitude:Double = 0.0
-    var latitude:Double = 0.0
-    var passengerMiles:Double = 0.0
-    var driverMiles:Double = 0.0
-    var Id:String = ""
-    var direction:String = ""
-    var date:Double = 0.0
-}
-
-
 struct Response: Codable {
     var ResponseCode: Int
     var ExecutedVersion: String
@@ -42,4 +31,10 @@ struct PayloadStruct: Codable {
             return self.start_location[1]
     }
     
+}
+
+enum ActiveFilter : Int {
+    case Drivers = 0
+    case Passengers = 1
+    case Off = 2
 }
